@@ -27,7 +27,7 @@ export class FlightService {
 
     async findOne(id: string): Promise<IFlight>
     {
-        return await this.model.findById(id);
+        return await this.model.findById(id).populate('passengers');
     }
 
     async update(id: string, flightDto: FlightDto): Promise<IFlight>
@@ -43,5 +43,15 @@ export class FlightService {
             status: HttpStatus.OK,
             message: 'deleted'
         };
+    }
+
+    async addPassenger(flightId: string, passengerId: string): Promise<IFlight>
+    {
+        return await this.model.findByIdAndUpdate(
+            flightId, {
+                $addToSet: {passengers: passengerId}
+            },
+            {new: true}
+        ).populate('passengers');
     }
 }

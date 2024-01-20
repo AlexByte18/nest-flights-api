@@ -4,6 +4,8 @@ import { FlightService } from './flight.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Flight } from 'src/common/models/models';
 import { FlightSchema } from './schema/flight.schema';
+import { PassengerService } from 'src/passenger/passenger.service';
+import { PassengerModule } from 'src/passenger/passenger.module';
 
 @Module({
   imports: [
@@ -12,7 +14,8 @@ import { FlightSchema } from './schema/flight.schema';
             name: Flight.name,
             useFactory: () => FlightSchema.plugin(require ('mongoose-autopopulate'))
         }
-    ])
+    ]),
+    PassengerModule
   ],
   controllers: [FlightController],
   providers: [FlightService]
