@@ -1,8 +1,10 @@
+import { ApiTags } from '@nestjs/swagger';
 import { FlightDto } from './dtos/flight.dto';
 import { FlightService } from './flight.service';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { PassengerService } from 'src/passenger/passenger.service';
 
+@ApiTags('flights')
 @Controller('api/v1/flight')
 export class FlightController {
 
