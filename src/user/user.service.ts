@@ -14,6 +14,17 @@ export class UserService {
         private readonly model:Model<IUser>
     ) {}
 
+    async checkPassword(password: string, passwordDB: string): Promise<boolean>
+    {
+        console.log('UserService@checkPassword');
+        return await bcrypt.compare(password, passwordDB);
+    }
+
+    async findByUsername(username: string)
+    {
+        console.log('UserService@findByUsername');
+        return await this.model.findOne({username});
+    }
 
     async hashPassword(password: string): Promise<string> 
     {
