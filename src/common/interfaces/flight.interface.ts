@@ -1,7 +1,7 @@
 import { IPassenger } from "src/passenger/interfaces/passenger.interface";
 
 
-export interface IFlight extends Document {
+export interface IFlight {
     pilot: string;
     airplane: string;
     destinationCity: string;

@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 
 
-export interface IPassenger extends Document {
+export interface IPassenger {
     name: string;
     email: string;
 }

@@ -1,8 +1,13 @@
+import { UserDto } from './../user/dtos/user.dto';
 import { PassengerService } from './passenger.service';
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { PassengerDto } from './dtos/passenger.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ClientProxyFlights } from 'src/common/proxy/client-proxy';
+import { Observable } from 'rxjs';
+import { IPassenger } from './interfaces/passenger.interface';
+import { PassengerMSG } from 'src/common/constants';
 
 @ApiTags('passengers')
 @Controller('api/v1/passenger')
@@ -11,42 +16,39 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class PassengerController {
 
     constructor(
-        private readonly passengerService: PassengerService
+        private readonly passengerService: PassengerService,
+        private readonly clientProxy: ClientProxyFlights
     ){}
 
+    private _clientProxyPassenger = this.clientProxy.clientProxyPassengers();
+
     @Post()
-    create(@Body() passengerDto: PassengerDto)
+    create(@Body() passengerDto: PassengerDto): Observable<IPassenger>
     {
-        return this.passengerService.create(passengerDto);
+        return this._clientProxyPassenger.send(PassengerMSG.CREATE, passengerDto);
     }
 
     @Get()
-    getAllPassengers()
+    getAllPassengers(): Observable<IPassenger[]>
     {
-        return this.passengerService.getAll();
+        return this._clientProxyPassenger.send(PassengerMSG.FIND_ALL, '');
     }
 
     @Get(':id')
-    show(@Param('id') id: string)
+    show(@Param('id') id: string): Observable<IPassenger>
     {
-        return this.passengerService.findOne(id);
+        return this._clientProxyPassenger.send(PassengerMSG.FIND_ONE, id);
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() passengerDto: PassengerDto)
+    update(@Param('id') id: string, @Body() passengerDto: PassengerDto): Observable<IPassenger>
     {
-        console.log({passengerDto})
-        return this.passengerService.update(id, passengerDto);
+        return this._clientProxyPassenger.send(PassengerMSG.UPDATE, {id, UserDto});
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string)
+    delete(@Param('id') id: string): Observable<any>
     {
-        this.passengerService.delete(id);
-
-        return {
-            status: HttpStatus.OK,
-            message: 'deleted'
-        }
+        return this._clientProxyPassenger.send(PassengerMSG.DELETE, id);
     }
 }
