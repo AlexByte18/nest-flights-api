@@ -1,8 +1,12 @@
+import { UserMSG } from './../common/constants';
 import { UserService } from './user.service';
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { UserDto } from './dtos/user.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ClientProxyFlights } from 'src/common/proxy/client-proxy';
+import { IUser } from 'src/common/interfaces/user.interface';
+import { Observable } from 'rxjs';
 
 @ApiTags('users')
 @Controller('api/v1/user')
@@ -11,36 +15,40 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class UserController {
 
     constructor( 
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly clientProxy: ClientProxyFlights,
     ) {}
+
+    private _clientProxyUser = this.clientProxy.clientProxyUsers();
 
     @Post()
     @ApiOperation({summary: 'create a new user'})
-    create(@Body() userDto: UserDto)
+    create(@Body() userDto: UserDto): Observable<IUser>
     {
-        return this.userService.create(userDto);
+        return this._clientProxyUser.send(UserMSG.CREATE, userDto);
     }
 
     @Get()
-    findAll() {
-        return this.userService.findAll();
+    findAll(): Observable<IUser[]>
+    {
+        return this._clientProxyUser.send(UserMSG.FIND_ALL, '');
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string)
+    findOne(@Param('id') id: string): Observable<IUser>
     {
-        return this.userService.findOne(id);
+        return this._clientProxyUser.send(UserMSG.FIND_ONE, id);
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() userDto: UserDto)
+    update(@Param('id') id: string, @Body() userDto: UserDto): Observable<IUser>
     {
-        return this.userService.update(id, userDto);
+        return this._clientProxyUser.send(UserMSG.UPDATE, {id, userDto});
     }
 
     @Delete(':id')
     delete(@Param('id') id: string)
     {
-        return this.userService.delete(id);
+        return this._clientProxyUser.send(UserMSG.DELETE, id);
     }
 }
