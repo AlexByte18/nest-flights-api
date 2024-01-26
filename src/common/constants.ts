@@ -1,6 +1,8 @@
+import { Flight } from './models/models';
 export enum RabbitMQ {
     UserQueue = 'users',
     PassengerQueue = 'passenger',
+    FlightQueue = 'flights',
 }
 
 export enum UserMSG {
@@ -18,4 +20,13 @@ export enum PassengerMSG {
     FIND_ONE = 'FIND_ONE_PASSENGER',
     UPDATE = 'UPDATE_PASSENGER',
     DELETE = 'DELETE_PASSENGER',
+}
+
+export enum FlightMSG {
+    CREATE = 'CREATE_FLIGHT',
+    FIND_ALL = 'FIND_FLIGHTS',
+    FIND_ONE = 'FIND_ONE_FLIGHT',
+    UPDATE = 'UPDATE_FLIGHT',
+    DELETE = 'DELETE_FLIGHT',
+    ADD_PASSENGER = 'ADD_PASSENGER',
 }
